@@ -1,0 +1,34 @@
+{
+  "parser": "babel-eslint",
+  
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true
+  },
+
+  
+  "parserOptions": { 
+    "ecmaVersion": 6,
+    "ecmaFeatures": {
+      "sourceType": "modules",
+      "impliedStrict": true
+    }
+  },
+
+  "globals": {
+    "process.env": true
+  },
+
+
+  "extends": "standard",
+
+  "rules": {
+    "key-spacing": 0,
+    "no-trailing-spaces": 0,
+    "no-multiple-empty-lines": [2, {"max": 2}],
+    "padded-blocks": 0,
+    "semi": [2, "always"],
+    "arrow-parens": 0
+  }
+}
