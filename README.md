@@ -3,6 +3,7 @@ Sequelize database resolver modules for GraphQL Guru.
 
 It supports the dialects PostgreSQL, MySQL, SQLite and MSSQL 
 
+**NOT PUBLISHED YET. STILL IN DEVELOPMENT**
 
 ## Installation
 1) In a terminal run `npm install graphql-guru-sequelize`
