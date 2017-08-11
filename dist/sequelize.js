@@ -78,6 +78,45 @@ function connect(_ref2) {
     console.error('Unable to connect to the database:', err);
   });
 
+  var Hello = db.define('hello', {
+    firstName: {
+      type: _sequelize2.default.STRING
+    },
+    lastName: {
+      type: _sequelize2.default.STRING
+    }
+  });
+
+  // Hello.sync({ force: true }).then(() => {
+  //   return Hello.bulkCreate([
+  //     {
+  //       id: '1',
+  //       firstName: 'Bessie',
+  //       lastName: 'Cummings'
+  //     },
+  //     {
+  //       id: '2',
+  //       firstName: 'Gina',
+  //       lastName: 'Altenwerth'
+  //     },
+  //     {
+  //       id: '3',
+  //       firstName: 'Marcia',
+  //       lastName: 'Lueilwitz'
+  //     },
+  //     {
+  //       id: '4',
+  //       firstName: 'Jeffrey',
+  //       lastName: 'Kuvalis'
+  //     },
+  //     {
+  //       id: '5',
+  //       firstName: 'Green',
+  //       lastName: 'Heaney'
+  //     }
+  //   ]);
+  // });
+
   return db;
 }
 
@@ -103,14 +142,17 @@ var SequelizeQuery = exports.SequelizeQuery = function () {
 
       var db = databases.sequelize;
       var TABLE = this.table;
+      var fields = json[TABLE].schema;
 
       return promise(function (resolve, reject) {
         Model({
           db: db,
-          fields: json[TABLE].schema,
+          fields: fields,
           table: TABLE
         }).then(function (sql) {
-          return sql.findAll();
+          return sql.findAll({
+            attributes: Object.keys(fields)
+          });
         }).then(function (response) {
           return response.map(function (item) {
             return item.dataValues;
@@ -128,11 +170,30 @@ var SequelizeQuery = exports.SequelizeQuery = function () {
       var query = _ref4.query,
           args = _ref4.args,
           databases = _ref4.databases,
-          models = _ref4.models;
+          models = _ref4.models,
+          json = _ref4.json;
 
       var db = databases.sequelize;
       var obj = args || query;
       var TABLE = this.table;
+      var fields = json[TABLE].schema;
+      console.log(obj.id);
+      return promise(function (resolve, reject) {
+        Model({
+          db: db,
+          fields: fields,
+          table: TABLE
+        }).then(function (sql) {
+          return sql.findOne({
+            attributes: Object.keys(fields),
+            where: { id: obj.id }
+          });
+        }).then(function (data) {
+          return resolve(data);
+        }).catch(function (error) {
+          return reject(error);
+        });
+      });
     }
   }, {
     key: 'findManyById',
@@ -140,13 +201,33 @@ var SequelizeQuery = exports.SequelizeQuery = function () {
       var query = _ref5.query,
           args = _ref5.args,
           databases = _ref5.databases,
-          models = _ref5.models;
+          models = _ref5.models,
+          json = _ref5.json;
 
       var db = databases.sequelize;
       var obj = args || query;
       var TABLE = this.table;
-      var ids = obj.id.map(function (id) {
-        return { id: id };
+      var fields = json[TABLE].schema;
+
+      return promise(function (resolve, reject) {
+        Model({
+          db: db,
+          fields: fields,
+          table: TABLE
+        }).then(function (sql) {
+          return sql.findAll({
+            attributes: Object.keys(fields),
+            where: { id: obj.id }
+          });
+        }).then(function (response) {
+          return response.map(function (item) {
+            return item.dataValues;
+          });
+        }).then(function (data) {
+          return resolve(data);
+        }).catch(function (error) {
+          return reject(error);
+        });
       });
     }
   }]);
@@ -166,35 +247,126 @@ var SequelizeMutation = exports.SequelizeMutation = function () {
     value: function create(_ref6) {
       var args = _ref6.args,
           databases = _ref6.databases,
-          models = _ref6.models;
+          models = _ref6.models,
+          json = _ref6.json;
 
       var db = databases.sequelize;
       var TABLE = this.table;
+      var fields = json[TABLE].schema;
+
+      return promise(function (resolve, reject) {
+        Model({
+          db: db,
+          fields: fields,
+          table: TABLE
+        }).then(function (sql) {
+          return sql.create(args);
+        }).then(function (response) {
+          return response.map(function (item) {
+            return item.dataValues;
+          });
+        }).then(function (data) {
+          return resolve(data);
+        }).catch(function (error) {
+          return reject(error);
+        });
+      });
     }
   }, {
     key: 'remove',
     value: function remove(_ref7) {
       var args = _ref7.args,
           databases = _ref7.databases,
-          models = _ref7.models;
+          models = _ref7.models,
+          json = _ref7.json;
 
       var db = databases.sequelize;
-      var id = args.id;
       var TABLE = this.table;
+      var fields = json[TABLE].schema;
+
+      return promise(function (resolve, reject) {
+        Model({
+          db: db,
+          fields: fields,
+          table: TABLE
+        }).then(function (sql) {
+          return sql.destroy({
+            where: { id: args.id }
+          });
+        }).then(function (response) {
+          return response.map(function (item) {
+            return item.dataValues;
+          });
+        }).then(function (data) {
+          return resolve(data);
+        }).catch(function (error) {
+          return reject(error);
+        });
+      });
     }
   }, {
     key: 'update',
     value: function update(_ref8) {
       var args = _ref8.args,
           databases = _ref8.databases,
-          models = _ref8.models;
+          models = _ref8.models,
+          json = _ref8.json;
 
       var db = databases.sequelize;
-      var id = args.id;
       var TABLE = this.table;
+      var fields = json[TABLE].schema;
+
+      return promise(function (resolve, reject) {
+        Model({
+          db: db,
+          fields: fields,
+          table: TABLE
+        }).then(function (sql) {
+          return sql.update(args, {
+            where: { id: args.id }
+          });
+        }).then(function (response) {
+          return response.map(function (item) {
+            return item.dataValues;
+          });
+        }).then(function (data) {
+          return resolve(data);
+        }).catch(function (error) {
+          return reject(error);
+        });
+      });
+    }
+  }, {
+    key: 'createMany',
+    value: function createMany(_ref9) {
+      var args = _ref9.args,
+          databases = _ref9.databases,
+          models = _ref9.models,
+          json = _ref9.json;
+
+      var db = databases.sequelize;
+      var TABLE = this.table;
+      var fields = json[TABLE].schema;
+
+      return promise(function (resolve, reject) {
+        Model({
+          db: db,
+          fields: fields,
+          table: TABLE
+        }).then(function (sql) {
+          return sql.bulkCreate(args);
+        }).then(function (response) {
+          return response.map(function (item) {
+            return item.dataValues;
+          });
+        }).then(function (data) {
+          return resolve(data);
+        }).catch(function (error) {
+          return reject(error);
+        });
+      });
     }
 
-    // createMany
     // deleteMany
     // removeMany
     // updateMany

@@ -56,6 +56,45 @@ export function connect ({
       console.error('Unable to connect to the database:', err);
     });
 
+  const Hello = db.define('hello', {
+    firstName: {
+      type: Sequelize.STRING
+    },
+    lastName: {
+      type: Sequelize.STRING
+    }
+  });
+
+  // Hello.sync({ force: true }).then(() => {
+  //   return Hello.bulkCreate([
+  //     {
+  //       id: '1',
+  //       firstName: 'Bessie',
+  //       lastName: 'Cummings'
+  //     },
+  //     {
+  //       id: '2',
+  //       firstName: 'Gina',
+  //       lastName: 'Altenwerth'
+  //     },
+  //     {
+  //       id: '3',
+  //       firstName: 'Marcia',
+  //       lastName: 'Lueilwitz'
+  //     },
+  //     {
+  //       id: '4',
+  //       firstName: 'Jeffrey',
+  //       lastName: 'Kuvalis'
+  //     },
+  //     {
+  //       id: '5',
+  //       firstName: 'Green',
+  //       lastName: 'Heaney'
+  //     }
+  //   ]);
+  // });
+
   return db;
 }
 
@@ -73,31 +112,70 @@ export class SequelizeQuery {
   findAll ({ args, databases, models, json }) {
     const db = databases.sequelize;
     const TABLE = this.table;
+    const fields = json[TABLE].schema;
 
     return promise((resolve, reject) => {
       Model({
         db,
-        fields: json[TABLE].schema,
+        fields,
         table: TABLE
       })
-        .then(sql => sql.findAll())
+        .then(sql =>
+          sql.findAll({
+            attributes: Object.keys(fields)
+          })
+        )
         .then(response => response.map(item => item.dataValues))
         .then(data => resolve(data))
         .catch(error => reject(error));
     });
   }
 
-  findById ({ query, args, databases, models }) {
+  findById ({ query, args, databases, models, json }) {
     const db = databases.sequelize;
     let obj = args || query;
     const TABLE = this.table;
+    const fields = json[TABLE].schema;
+    console.log(obj.id);
+    return promise((resolve, reject) => {
+      Model({
+        db,
+        fields,
+        table: TABLE
+      })
+        .then(sql =>
+          sql.findOne({
+            attributes: Object.keys(fields),
+            where: { id: obj.id }
+          })
+        )
+        .then(data => resolve(data))
+        .catch(error => reject(error));
+    });
   }
 
-  findManyById ({ query, args, databases, models }) {
+  findManyById ({ query, args, databases, models, json }) {
     const db = databases.sequelize;
     let obj = args || query;
     const TABLE = this.table;
-    const ids = obj.id.map(id => ({ id }));
+    const fields = json[TABLE].schema;
+
+    return promise((resolve, reject) => {
+      Model({
+        db,
+        fields,
+        table: TABLE
+      })
+        .then(sql =>
+          sql.findAll({
+            attributes: Object.keys(fields),
+            where: { id: obj.id }
+          })
+        )
+        .then(response => response.map(item => item.dataValues))
+        .then(data => resolve(data))
+        .catch(error => reject(error));
+    });
   }
 }
 
@@ -106,24 +184,86 @@ export class SequelizeMutation {
     autobind(this);
   }
 
-  create ({ args, databases, models }) {
+  create ({ args, databases, models, json }) {
     const db = databases.sequelize;
     const TABLE = this.table;
+    const fields = json[TABLE].schema;
+
+    return promise((resolve, reject) => {
+      Model({
+        db,
+        fields,
+        table: TABLE
+      })
+        .then(sql => sql.create(args))
+        .then(response => response.map(item => item.dataValues))
+        .then(data => resolve(data))
+        .catch(error => reject(error));
+    });
   }
 
-  remove ({ args, databases, models }) {
+  remove ({ args, databases, models, json }) {
     const db = databases.sequelize;
-    const id = args.id;
     const TABLE = this.table;
+    const fields = json[TABLE].schema;
+
+    return promise((resolve, reject) => {
+      Model({
+        db,
+        fields,
+        table: TABLE
+      })
+        .then(sql =>
+          sql.destroy({
+            where: { id: args.id }
+          })
+        )
+        .then(response => response.map(item => item.dataValues))
+        .then(data => resolve(data))
+        .catch(error => reject(error));
+    });
   }
 
-  update ({ args, databases, models }) {
+  update ({ args, databases, models, json }) {
     const db = databases.sequelize;
-    const id = args.id;
     const TABLE = this.table;
+    const fields = json[TABLE].schema;
+
+    return promise((resolve, reject) => {
+      Model({
+        db,
+        fields,
+        table: TABLE
+      })
+        .then(sql =>
+          sql.update(args, {
+            where: { id: args.id }
+          })
+        )
+        .then(response => response.map(item => item.dataValues))
+        .then(data => resolve(data))
+        .catch(error => reject(error));
+    });
   }
 
-  // createMany
+  createMany ({ args, databases, models, json }) {
+    const db = databases.sequelize;
+    const TABLE = this.table;
+    const fields = json[TABLE].schema;
+
+    return promise((resolve, reject) => {
+      Model({
+        db,
+        fields,
+        table: TABLE
+      })
+        .then(sql => sql.bulkCreate(args))
+        .then(response => response.map(item => item.dataValues))
+        .then(data => resolve(data))
+        .catch(error => reject(error));
+    });
+  }
+
   // deleteMany
   // removeMany
   // updateMany
