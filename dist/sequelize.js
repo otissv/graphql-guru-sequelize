@@ -79,45 +79,6 @@ function connect(_ref2) {
     console.error('Unable to connect to the database:', err);
   });
 
-  var Hello = db.define('hello', {
-    firstName: {
-      type: _sequelize2.default.STRING
-    },
-    lastName: {
-      type: _sequelize2.default.STRING
-    }
-  });
-
-  // Hello.sync({ force: true }).then(() => {
-  //   return Hello.bulkCreate([
-  //     {
-  //       id: '1',
-  //       firstName: 'Bessie',
-  //       lastName: 'Cummings'
-  //     },
-  //     {
-  //       id: '2',
-  //       firstName: 'Gina',
-  //       lastName: 'Altenwerth'
-  //     },
-  //     {
-  //       id: '3',
-  //       firstName: 'Marcia',
-  //       lastName: 'Lueilwitz'
-  //     },
-  //     {
-  //       id: '4',
-  //       firstName: 'Jeffrey',
-  //       lastName: 'Kuvalis'
-  //     },
-  //     {
-  //       id: '5',
-  //       firstName: 'Green',
-  //       lastName: 'Heaney'
-  //     }
-  //   ]);
-  // });
-
   return db;
 }
 

@@ -56,15 +56,6 @@ export function connect ({
       console.error('Unable to connect to the database:', err);
     });
 
-  const Hello = db.define('hello', {
-    firstName: {
-      type: Sequelize.STRING
-    },
-    lastName: {
-      type: Sequelize.STRING
-    }
-  });
-
   return db;
 }
 
@@ -161,7 +152,7 @@ export class SequelizeMutation {
 
     return promise((resolve, reject) => {
       Model({
-        db, 
+        db,
         fields,
         table: TABLE
       })
