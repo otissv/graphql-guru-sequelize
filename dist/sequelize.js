@@ -58,14 +58,15 @@ function Model(_ref) {
 
 function connect(_ref2) {
   var username = _ref2.username,
-      databases = _ref2.databases,
+      database = _ref2.database,
+      password = _ref2.password,
       port = _ref2.port,
       dialect = _ref2.dialect,
       host = _ref2.host,
       pool = _ref2.pool,
       storage = _ref2.storage;
 
-  var db = new _sequelize2.default('database', 'username', 'password', {
+  var db = new _sequelize2.default(database, username, password, {
     host: host,
     dialect: dialect,
     pool: pool,
@@ -261,10 +262,6 @@ var SequelizeMutation = exports.SequelizeMutation = function () {
           table: TABLE
         }).then(function (sql) {
           return sql.create(args);
-        }).then(function (response) {
-          return response.map(function (item) {
-            return item.dataValues;
-          });
         }).then(function (data) {
           return resolve(data);
         }).catch(function (error) {
@@ -293,10 +290,6 @@ var SequelizeMutation = exports.SequelizeMutation = function () {
           return sql.destroy({
             where: { id: args.id }
           });
-        }).then(function (response) {
-          return response.map(function (item) {
-            return item.dataValues;
-          });
         }).then(function (data) {
           return resolve(data);
         }).catch(function (error) {
@@ -324,10 +317,6 @@ var SequelizeMutation = exports.SequelizeMutation = function () {
         }).then(function (sql) {
           return sql.update(args, {
             where: { id: args.id }
-          });
-        }).then(function (response) {
-          return response.map(function (item) {
-            return item.dataValues;
           });
         }).then(function (data) {
           return resolve(data);

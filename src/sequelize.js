@@ -1,6 +1,5 @@
 import Sequelize from 'sequelize';
 import autobind from 'class-autobind';
-
 export function promise (fn) {
   return new Promise((resolve, reject) => fn(resolve, reject));
 }
@@ -33,14 +32,15 @@ function Model ({ db, fields, table }) {
 
 export function connect ({
   username,
-  databases,
+  database,
+  password,
   port,
   dialect,
   host,
   pool,
   storage
 }) {
-  const db = new Sequelize('database', 'username', 'password', {
+  const db = new Sequelize(database, username, password, {
     host,
     dialect,
     pool,
@@ -64,36 +64,6 @@ export function connect ({
       type: Sequelize.STRING
     }
   });
-
-  // Hello.sync({ force: true }).then(() => {
-  //   return Hello.bulkCreate([
-  //     {
-  //       id: '1',
-  //       firstName: 'Bessie',
-  //       lastName: 'Cummings'
-  //     },
-  //     {
-  //       id: '2',
-  //       firstName: 'Gina',
-  //       lastName: 'Altenwerth'
-  //     },
-  //     {
-  //       id: '3',
-  //       firstName: 'Marcia',
-  //       lastName: 'Lueilwitz'
-  //     },
-  //     {
-  //       id: '4',
-  //       firstName: 'Jeffrey',
-  //       lastName: 'Kuvalis'
-  //     },
-  //     {
-  //       id: '5',
-  //       firstName: 'Green',
-  //       lastName: 'Heaney'
-  //     }
-  //   ]);
-  // });
 
   return db;
 }
@@ -191,12 +161,11 @@ export class SequelizeMutation {
 
     return promise((resolve, reject) => {
       Model({
-        db,
+        db, 
         fields,
         table: TABLE
       })
         .then(sql => sql.create(args))
-        .then(response => response.map(item => item.dataValues))
         .then(data => resolve(data))
         .catch(error => reject(error));
     });
@@ -218,7 +187,6 @@ export class SequelizeMutation {
             where: { id: args.id }
           })
         )
-        .then(response => response.map(item => item.dataValues))
         .then(data => resolve(data))
         .catch(error => reject(error));
     });
@@ -240,7 +208,6 @@ export class SequelizeMutation {
             where: { id: args.id }
           })
         )
-        .then(response => response.map(item => item.dataValues))
         .then(data => resolve(data))
         .catch(error => reject(error));
     });
