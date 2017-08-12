@@ -3,8 +3,6 @@ Sequelize database resolver modules for GraphQL Guru.
 
 It supports the dialects PostgreSQL, MySQL, SQLite and MSSQL 
 
-**NOT PUBLISHED YET. STILL IN DEVELOPMENT**
-
 ## Installation
 1) In a terminal run `npm install graphql-guru-sequelize`
 
@@ -24,15 +22,17 @@ It supports the dialects PostgreSQL, MySQL, SQLite and MSSQL
           min: 0,
           idle: 10000
         }
-      }
+      },
+      // SQLite only
+      storage: 'path/to/sqlite/database'
     }
 ```
 
-3) In index-database.js import graphql-guru-jsondb and add it to the database object.
+3) In index-database.js import graphql-guru-sequelize and add it to the database object.
 
     server/core/database/index-database.js
 ```
-    import * as jsondb from 'graphql-guru-jsondb';
+    import * as sequelize from 'graphql-guru-sequelize';
 
     export const databases = {
       sequelize
@@ -44,7 +44,7 @@ It supports the dialects PostgreSQL, MySQL, SQLite and MSSQL
 
     server/modules/resolverQuery.js
     ```
-    import { SequelizeQuery } from 'graphql-guru-jsondb';
+    import { SequelizeQuery } from 'graphql-guru-sequelize';
 
     export default class People extends SequelizeQuery {
     }
@@ -52,7 +52,7 @@ It supports the dialects PostgreSQL, MySQL, SQLite and MSSQL
 
     server/modules/resolverMutation.js
     ```
-    import { SequelizeMutation } from 'graphql-guru-jsondb';
+    import { SequelizeMutation } from 'graphql-guru-sequelize';
 
     export default class People extends SequelizeMutation {
     }
